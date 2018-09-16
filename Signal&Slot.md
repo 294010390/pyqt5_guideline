@@ -1,3 +1,6 @@
+# 信号&槽(QT 基础)
+  转自[QT核心：signal-slot 信号/槽机制 最详细最通俗易懂的一篇]https://blog.csdn.net/zkl99999/article/details/53787044
+
 # 第一章      信号&槽（Signals and Slots)
 
 - 信号和槽通常用于对象间的通信。信号和槽机制是 Qt 的主要特性并且也很有可能是它与其他框架特性区别最大的部分。
@@ -80,18 +83,15 @@
 
 emit行从对象中以新的value值作为参数，发送信号valueChanged()。
 
- 
-
 在下面的代码段中，我们创建两个Counter对象，然后利用QObject::connect():将第一个对象的valueChanged()信号与第二个对象的setValue()槽连接起来。
 
-Counter a, b;
-QObject::connect(&a, SIGNAL(valueChanged(int)),
-&b, SLOT(setValue(int)));
- 
-a.setValue(12);     //  a.value() == 12, b.value() == 12
-b.setValue(48);        //   a.value() == 12, b.value() == 48
+    Counter a, b;
+    QObject::connect(&a, SIGNAL(valueChanged(int)),
+    &b, SLOT(setValue(int)));
 
- 
+    a.setValue(12);     //  a.value() == 12, b.value() == 12
+    b.setValue(48);        //   a.value() == 12, b.value() == 48
+
 
 调用 a.setValue(12) 使a发送一个valueChanged(12) 信号，b将利用setValue() 槽来接收这个信号。比如，b.setValue(12)被调用，然后b发送相同的valueChanged()信号，但是因为没有槽与b的 valueChanged() 信号连接，因此这个信号被忽略。
 
@@ -99,12 +99,9 @@ b.setValue(48);        //   a.value() == 12, b.value() == 48
 
 一般情况下，发送一个信号的连接和发送两个信号的重复连接，都可以通过调用QObject::connect连接信号和槽时使用的参数。如果你在连接信号和槽时传递了Qt::UniqueConnection类型，只有它不是一个重复连接，连接才会成功。如果之前已经有了一个链接（相同的信号连接到同一对象的同一个槽上），那么连接将会失败并将返回false。
 
- 
-
 这个例子说明对象之间可以在不需要了解彼此信息的情况下相互协作。要实现这样的功能，对象之间仅需要互相连接就可以了，这种连接可以通过简单的调用QObject::connect() 函数或利用uic（User Interface Compiler，UI Designer工具之一，从.ui文件（XML样式）读取描述，然后生成C++代码。）的自动连接特性来完成。
 
 
- 
 
 # 第五章      示例编译
 
@@ -113,9 +110,7 @@ Qt工程编译时，C++预处理器会删改 signals, slots与emit关键字,以�
 通过对包含信号与槽的类定义运行 moc 程序,会产生一个相应的C++源文件,这个源文件将会被编译,并参与应用程序的目标文件(Object file)链接过程。如果你直接使用 qmake 命令, 它会把自动调用 moc 程序的makefile规则添加到工程的makefile文件中。
 
 
- 
 
- 
 # 第六章      信号(Signals)
 
 信号在对象的内部状态改变的时候以某种方式发送出来,以通知该对象感兴趣的客户端或拥有者。只有在类中定义了信号才能在该类及其子类中发送信号。
@@ -132,20 +127,17 @@ Qt工程编译时，C++预处理器会删改 signals, slots与emit关键字,以�
 
 # 第七章      槽(Slots)
 
-      槽与信号连接之后,当信号发送时就会被调用。槽其实就是普通的C++函数,并且可以像普通函数一样调用.它们唯一的特点就是可以与信号相连。
+  槽与信号连接之后,当信号发送时就会被调用。槽其实就是普通的C++函数,并且可以像普通函数一样调用.它们唯一的特点就是可以与信号相连。
 
-      因为槽是普通的成员函数，所以当它们被直接调用时，它们也遵循C++函数调用规则。然而，它们也可以通过信号-槽之间的连接，由其它组件调用而不管槽的访问级别(如：private级别的槽)。换句话说，从任意的类实例中发送出来的信号都能调用一个不相关类中的private级别的槽。
+   因为槽是普通的成员函数，所以当它们被直接调用时，它们也遵循C++函数调用规则。然而，它们也可以通过信号-槽之间的连接，由其它组件调用而不管槽的访问级别(如：private级别的槽)。换句话说，从任意的类实例中发送出来的信号都能调用一个不相关类中的private级别的槽。
 
-      槽也可以用virutal定义，实际上，后面我们会发现这样子做很有用。
+   槽也可以用virutal定义，实际上，后面我们会发现这样子做很有用。
 
-      与回调函数(callback)相比，信号与槽会稍微慢一些（译者注：大概慢一个数量级左右，但以现在的硬件来说，我们根本感觉不出来。），这是因为信号-槽机制更灵活。当然，实际应用程序上，它们的不同点是忽略不计的。一般来讲，引发一个连接了多个槽的信号，会比直接调用信号的接收者，慢10倍左右（这里不与虚函数调用比较）。这是因为，信号-槽机制需要定位连接对象，以确保安全地遍历所有的连接（例如，检查在信号发送过程中，所有要接收信号的对象未被销毁），以及参数的正反序列化，这些过程都必须占用花费。举个例子说明下，同时调用十个非虚函数听起来好像很多，但它的花费将比任意的new或delete操作少得多。试想下，你执行创建或销毁字符串，向量或列表的操作，它们将引发new或delete操作，与这些操作相比，信号-槽所需要的花费仅仅占整个函数调用花费的一小部分。
+   与回调函数(callback)相比，信号与槽会稍微慢一些（译者注：大概慢一个数量级左右，但以现在的硬件来说，我们根本感觉不出来。），这是因为信号-槽机制更灵活。当然，实际应用程序上，它们的不同点是忽略不计的。一般来讲，引发一个连接了多个槽的信号，会比直接调用信号的接收者，慢10倍左右（这里不与虚函数调用比较）。这是因为，信号-槽机制需要定位连接对象，以确保安全地遍历所有的连接（例如，检查在信号发送过程中，所有要接收信号的对象未被销毁），以及参数的正反序列化，这些过程都必须占用花费。举个例子说明下，同时调用十个非虚函数听起来好像很多，但它的花费将比任意的new或delete操作少得多。试想下，你执行创建或销毁字符串，向量或列表的操作，它们将引发new或delete操作，与这些操作相比，信号-槽所需要的花费仅仅占整个函数调用花费的一小部分。
 
-      在槽中进行系统调用的花费与上面讲述的类似。在一台i586-500机器上，你每秒可以进行2,000,000次的1对1信号-槽调用，或者1,200,000次的1对2信号-槽调用。信号-槽机制的简单性与灵活性，与它们所占花费比起来，那真是物超所值。当然客户在使用你的程序时，完全不会察觉到这种效率上的微小变化。
+   在槽中进行系统调用的花费与上面讲述的类似。在一台i586-500机器上，你每秒可以进行2,000,000次的1对1信号-槽调用，或者1,200,000次的1对2信号-槽调用。信号-槽机制的简单性与灵活性，与它们所占花费比起来，那真是物超所值。当然客户在使用你的程序时，完全不会察觉到这种效率上的微小变化。
 
-      注意，有些第三方库可能定义了一些变量，像signals或slots，这些库在Qt程序中使用时，这可能会引发编译器的警告或错误。要解决这个问题，使用#undef预处理器关闭这些预处理符号。
-
- 
-
+   注意，有些第三方库可能定义了一些变量，像signals或slots，这些库在Qt程序中使用时，这可能会引发编译器的警告或错误。要解决这个问题，使用#undef预处理器关闭这些预处理符号。
 
  
 # 第八章      元对象(Meta-Object)信息
@@ -154,13 +146,11 @@ Qt工程编译时，C++预处理器会删改 signals, slots与emit关键字,以�
 
 元对象也包含了一些额外的信息，如：对象的类名。这样子你就可以检查一个对象是否派生自一个特殊的类，如下代码所示：
 
-        if (widget->inherits("QAbstractButton")) {
-
+        if (widget->inherits("QAbstractButton")) 
+        {
          QAbstractButton *button = static_cast<QAbstractButton *>(widget);
-
          button->toggle();
-
-  }
+        }
 
 元对象信息也被qobject_cast<T>()操作符所使用，它与QObject::inherits()相似,但它更少出错
 
@@ -197,9 +187,9 @@ Qt工程编译时，C++预处理器会删改 signals, slots与emit关键字,以�
 
                   Q_OBJECT
 
-      QFrame继承自QWidget，QWidget继承自QObject，从而使LcdNumber具有我们前面所讲的信号-槽特性。
+  QFrame继承自QWidget，QWidget继承自QObject，从而使LcdNumber具有我们前面所讲的信号-槽特性。
 
-      Q_OBJECT宏由预处理器展开，该宏声明了几个由moc实现的成员函数。如果编译时，你发现“undefined reference to vtable for LcdNumber”错误消息，那么你就有可能是忘了运行moc程序，或者是在链接程序中，没有包含moc的输出文件。
+  Q_OBJECT宏由预处理器展开，该宏声明了几个由moc实现的成员函数。如果编译时，你发现“undefined reference to vtable for LcdNumber”错误消息，那么你就有可能是忘了运行moc程序，或者是在链接程序中，没有包含moc的输出文件。
 
         public:
 
@@ -207,19 +197,15 @@ Qt工程编译时，C++预处理器会删改 signals, slots与emit关键字,以�
 
  
 
-      LcdNumber的构造函数与moc的联系看上去没那么明显，但如果你从QWidget继承，那你可能想在你的构造函数中传递parent参数，并传递给基类的的构造函数。
+  LcdNumber的构造函数与moc的联系看上去没那么明显，但如果你从QWidget继承，那你可能想在你的构造函数中传递parent参数，并传递给基类的的构造函数。
 
-      一些构造函数在此被省略了。moc程序会忽略成员函数。
+  一些构造函数在此被省略了。moc程序会忽略成员函数。
 
         signals:
 
                void overflow();
-
-      LcdNumber要显示的值超过它的值范围时，会发送一个信号。
-
-      如果你不担心值溢出，或者你知道值溢出是不可能发生的，那么可以忽略overflow()信号，例如，不要让它与任何槽连接。
-
-另一方面，如果你想在值溢出时，调用两个不同的错误处理函数，那么简单地将该信号与两个不同的槽连接即可。Qt会调用这两个槽（按它们的连接顺序）。
+  LcdNumber要显示的值超过它的值范围时，会发送一个信号。
+  如果你不担心值溢出，或者你知道值溢出是不可能发生的，那么可以忽略overflow()信号，例如，不要让它与任何槽连接。另一方面，如果你想在值溢出时，调用两个不同的错误处理函数，那么简单地将该信号与两个不同的槽连接即可。Qt会调用这两个槽（按它们的连接顺序）。
         public slots:
 
                void display(int num);
@@ -239,24 +225,18 @@ Qt工程编译时，C++预处理器会删改 signals, slots与emit关键字,以�
                void setSmallDecimalPoint(bool point);
 
         };
-
- 
-
         #endif
 
-      上面的槽，用于接收其它窗口部件发生状态改变的信息。正如代码所示，LcdNumber用这些槽来显示数字。因为display()是LcdNumber类的接口，所以该槽的访问级别是public的。
+  上面的槽，用于接收其它窗口部件发生状态改变的信息。正如代码所示，LcdNumber用这些槽来显示数字。因为display()是LcdNumber类的接口，所以该槽的访问级别是public的。
 
-      Qt说明文档中有好几个示例程序将QScrollBar的valueChanged()信号连接到了display()槽，这样子LcdNumber就能在滚动条滚动时，不断的更新显示的值了。。
-
-      注意display槽的重载。当你将信号与槽连接时，Qt会选择一个最接近的版本与信号相连。如果使用回调函数，你就得寻找五个不同的名称，并且你要确保函数签名是正确的。
-
- 
+  Qt说明文档中有好几个示例程序将QScrollBar的valueChanged()信号连接到了display()槽，这样子LcdNumber就能在滚动条滚动时，不断的更新显示的值了。。
+  注意display槽的重载。当你将信号与槽连接时，Qt会选择一个最接近的版本与信号相连。如果使用回调函数，你就得寻找五个不同的名称，并且你要确保函数签名是正确的。
 
 # 第十章      信号-槽的默认参数
 
 信号与槽的签名包含参数，且参数可能含有不同的默认值。让我们看下QObject::destroyed():
 
-void destroyed(QObject* = 0);
+        void destroyed(QObject* = 0);
 
 当QObject被销毁时，它会发送QObject::destroyed()信号。当我们想对被删除的QObject对象进行一些处理时，例如，做些清理工作，就可以捕捉该信号。一种接收该信号的槽的函数签名可能像下面这样：
 
@@ -274,13 +254,13 @@ void destroyed(QObject* = 0);
 
                SLOT(objectDestroyed()));
 
-  connect(sender, SIGNAL(destroyed()), this, SLOT(objectDestroyed()));
+         connect(sender, SIGNAL(destroyed()), this, SLOT(objectDestroyed()));
 
 但下面的代码就不能正常工作：
 
-connect(sender, SIGNAL(destroyed()), this,
+        connect(sender, SIGNAL(destroyed()), this,
 
-SLOT(objectDestroyed(QObject*)));
+        SLOT(objectDestroyed(QObject*)));
 
 由于槽需要得到一个QObject作为参数，而信号却不带这个参数,会导致这个信号-槽连接报一个运行时错误，这种错误往往很难找出来。
 
@@ -321,17 +301,13 @@ SLOT(objectDestroyed(QObject*)));
 
 然后将mapped()信号与readFile()槽相连，这个槽依据不同的按钮点击事件，打开不同的文件。
 
-        connect(signalMapper, SIGNAL(mapped(QString)),
-
-               this, SLOT(readFile(QString)));
+        connect(signalMapper, SIGNAL(mapped(QString)),this, SLOT(readFile(QString)));
 
 注：下面的代码也可以编译运行，但由于签名规范化（signature normalization，查了GOOGLE，似乎找不到这词的中文翻译，个人认为应该是函数签名的转换，译者注），这些代码的运行效率会低些
 
         //由于函数签名运行时的规范化，这样子会慢些
 
-        connect(signalMapper, SIGNAL(mapped(const QString &)),
-
-         this, SLOT(readFile(const QString &)));
+        connect(signalMapper, SIGNAL(mapped(const QString &)),this, SLOT(readFile(const QString &)));
 
 
  
@@ -339,7 +315,7 @@ SLOT(objectDestroyed(QObject*)));
 
 也可以在Qt中使用第三方库的信号-槽机制。甚至可以在同一个项目中同时使用这两种机制。你只需向项目的qmake规则中添加如下代码即可：
 
-CONFIG += no_keywords
+        CONFIG += no_keywords
 
 这行代码告诉Qt不要定义moc关键字signals，slots与emit，这些关键字由第三方库使用，例如：Boost库。为了在no_keywords标志下继续使用Qt信号和槽，只要将源代码中原来使用到signals,slots,emit等关键字的地方，换成Q_SIGNALS (或Q_SIGNAL), Q_SLOTS (或Q_SLOT)和Q_EMIT这些Qt宏即可。
 
@@ -369,3 +345,4 @@ http://sigslot.sourceforge.NET/
 一个非常精简的signal & slot 实现库，整个库只有一个<< sigslot.h >>文件。
 
 Signal & slot 比较好的实现了对象间的解耦，在GUI框架中应用广泛。C++中signal & slot的实现，几乎都用到了Template, Delegation,  Functor等。
+
