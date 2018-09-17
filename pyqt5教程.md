@@ -9,6 +9,8 @@
 
 [python3.6.1 安装PyQt5，以及配置QTDesigner，PyUIC](https://blog.csdn.net/wenqiang1208/article/details/73656399)
 
+[PyQt5环境安装](https://blog.csdn.net/jxwzh/article/details/79119870)
+
 
 ## Pyqt教程
 [Pyqt5中文教材](https://maicss.gitbooks.io/pyqt5/content/%E7%BB%98%E5%9B%BE.html)
