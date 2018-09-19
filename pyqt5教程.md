@@ -26,4 +26,6 @@
 [QT窗体间传值总结之Signal&Slot](https://blog.csdn.net/hanxing0/article/details/9087237)
 
 
+- 窗口设计
+[PyQt5学习笔记09----标准文件打开保存框QFileDialog](https://blog.csdn.net/a359680405/article/details/45166271)
 
