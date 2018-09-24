@@ -27,5 +27,8 @@
 
 
 - 窗口设计
+
 [PyQt5学习笔记09----标准文件打开保存框QFileDialog](https://blog.csdn.net/a359680405/article/details/45166271)
+
+[PyQt5 弹框问题](https://blog.csdn.net/jeekmary/article/details/79254417)
 
